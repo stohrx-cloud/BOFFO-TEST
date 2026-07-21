@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Login | Boffo's</title>
+<style>
+:root{
+    --red:#8B1E1E;
+    --red-dark:#651414;
+    --cream:#F7F2E8;
+}
+*{ box-sizing:border-box; }
+body{
+    margin:0;
+    font-family:"Helvetica Neue", Helvetica, Arial, sans-serif;
+    background:var(--cream);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    min-height:100vh;
+}
+.login-card{
+    background:white;
+    border-radius:8px;
+    box-shadow:0 6px 20px rgba(0,0,0,.12);
+    padding:36px 32px;
+    width:100%;
+    max-width:360px;
+}
+.login-card h1{
+    color:var(--red);
+    font-size:1.4rem;
+    margin:0 0 4px;
+    text-align:center;
+    letter-spacing:1px;
+}
+.login-card p.subtitle{
+    text-align:center;
+    color:#888;
+    font-size:.85rem;
+    margin:0 0 24px;
+}
+label{
+    display:block;
+    font-size:.85rem;
+    font-weight:600;
+    margin:14px 0 4px;
+    color:#444;
+}
+input{
+    width:100%;
+    padding:10px;
+    border:1px solid #ccc;
+    border-radius:4px;
+    font-size:.95rem;
+    font-family:inherit;
+}
+input:focus{ outline:2px solid var(--red); border-color:var(--red); }
+button{
+    width:100%;
+    margin-top:22px;
+    padding:12px;
+    background:var(--red);
+    color:white;
+    border:none;
+    border-radius:4px;
+    font-size:.95rem;
+    font-weight:700;
+    cursor:pointer;
+    letter-spacing:.5px;
+}
+button:hover{ background:var(--red-dark); }
+button:disabled{ background:#bbb; cursor:not-allowed; }
+.error-msg{
+    display:none;
+    margin-top:14px;
+    padding:10px 12px;
+    background:#fdecea;
+    border:1px solid #f5b7b1;
+    border-radius:4px;
+    color:#c0392b;
+    font-size:.83rem;
+    text-align:center;
+}
+</style>
+</head>
+<body>
+
+<div class="login-card">
+    <h1>BOFFO'S</h1>
+    <p class="subtitle">Admin Dashboard</p>
+
+    <form id="loginForm">
+        <label for="email">Email</label>
+        <input type="email" id="email" autocomplete="username" required>
+
+        <label for="password">Password</label>
+        <input type="password" id="password" autocomplete="current-password" required>
+
+        <button type="submit" id="loginBtn">Log In</button>
+        <div class="error-msg" id="errorMsg"></div>
+    </form>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../supabase-config.js"></script>
+<script>
+// ── Startup sanity checks — surface setup problems instead of stalling ──
+function showError(msg){
+    const errEl = document.getElementById('errorMsg');
+    errEl.textContent = msg;
+    errEl.style.display = 'block';
+}
+
+function setupProblem(){
+    if (typeof supabase === 'undefined')
+        return "Couldn't load the Supabase library — check your internet connection or content blockers.";
+    if (typeof sb === 'undefined')
+        return "supabase-config.js didn't load. It must sit in the folder ABOVE this page (site root), with login.html inside /admin/.";
+    if (SUPABASE_URL.includes('PASTE_') || SUPABASE_ANON_KEY.includes('PASTE_'))
+        return "supabase-config.js still has placeholder values — paste your Project URL and anon key from Supabase → Project Settings → API.";
+    return null;
+}
+
+(async () => {
+    const problem = setupProblem();
+    if (problem){ showError(problem); return; }
+    try {
+        const { data: { session } } = await sb.auth.getSession();
+        if (session) window.location.href = 'dashboard.html';
+    } catch(e){ console.error(e); }
+})();
+
+document.getElementById('loginForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn   = document.getElementById('loginBtn');
+    const errEl = document.getElementById('errorMsg');
+    errEl.style.display = 'none';
+
+    const problem = setupProblem();
+    if (problem){ showError(problem); return; }
+
+    btn.disabled = true;
+    btn.textContent = 'Logging in…';
+
+    try {
+        const { error } = await sb.auth.signInWithPassword({
+            email:    document.getElementById('email').value.trim(),
+            password: document.getElementById('password').value,
+        });
+
+        if (error) {
+            showError(error.message === 'Invalid login credentials'
+                ? 'Incorrect email or password.'
+                : 'Login failed: ' + error.message);
+            return;
+        }
+
+        window.location.href = 'dashboard.html';
+    } catch (err) {
+        console.error(err);
+        showError("Couldn't reach Supabase — double-check the Project URL in supabase-config.js.");
+    } finally {
+        if (!window.location.href.endsWith('dashboard.html')){
+            btn.disabled = false;
+            btn.textContent = 'Log In';
+        }
+    }
+});
+</script>
+</body>
+</html>
