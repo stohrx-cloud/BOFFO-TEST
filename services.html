@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sample Menu | Boffo's Fine Foods</title>
+
+<style>
+:root{
+    --red:#8B1E1E;
+    --red-dark:#651414;
+    --cream:#F7F2E8;
+}
+
+/* BASE */
+body{
+    margin:0;
+    font-family:"Helvetica Neue", Helvetica, Arial, sans-serif;
+    background:var(--cream);
+    color:#333;
+    overflow-x:hidden;
+}
+
+/* TOP NAV */
+.top-nav{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:60px;
+    background:var(--red);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    z-index:9999;
+    box-shadow:0 2px 10px rgba(0,0,0,.15);
+}
+.nav-logo{
+    color:white;
+    font-weight:700;
+    letter-spacing:2px;
+}
+.burger{
+    position:absolute;
+    left:18px;
+    width:28px;
+    height:20px;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+    cursor:pointer;
+}
+.burger span{
+    height:3px;
+    background:white;
+    border-radius:2px;
+}
+
+/* SIDE MENU */
+.menu{
+    position:fixed;
+    top:0;
+    left:-260px;
+    width:260px;
+    height:100%;
+    background:var(--red-dark);
+    padding:80px 20px;
+    box-sizing:border-box;
+    transition:.3s ease;
+    z-index:10000;
+}
+.menu.open{left:0;}
+.menu-logo{
+    color:white;
+    font-size:1.4rem;
+    font-weight:700;
+    text-align:center;
+    margin-bottom:30px;
+}
+.menu a{
+    display:block;
+    color:white;
+    text-decoration:none;
+    padding:14px 0;
+    border-bottom:1px solid rgba(255,255,255,.15);
+}
+
+/* HERO */
+.hero{
+    margin-top:60px;
+    height:140px;
+    background:
+      linear-gradient(rgba(139,30,30,.55),rgba(139,30,30,.55)),
+      url("https://images.unsplash.com/photo-1600891964599-f61ba0e24092?auto=format&fit=crop&w=1600&q=80");
+    background-size:cover;
+    background-position:center;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+.hero-logo{
+    height:70px;
+    width:auto;
+}
+/* PAGE HEADER */
+.page-header{
+    margin-top:80px;
+    text-align:center;
+    padding:20px;
+}
+.page-header h1{
+    color:var(--red);
+    font-size:2.2rem;
+    margin-bottom:10px;
+}
+.page-header h3{
+    font-size:1.4rem;
+    color:#444;
+    font-weight:500;
+}
+
+/* TABS */
+.menu-tabs{
+    display:flex;
+    max-width:1100px;
+    margin:0 auto 10px;
+    padding:0 20px;
+    border-bottom:2px solid rgba(0,0,0,.08);
+}
+.menu-tab{
+    flex:1;
+    text-align:center;
+    padding:12px 8px;
+    cursor:pointer;
+    font-weight:600;
+    font-size:0.95rem;
+    color:#555;
+    border-bottom:3px solid transparent;
+    transition:.2s ease;
+}
+.menu-tab.active{
+    color:var(--red);
+    border-bottom-color:var(--red);
+    background:rgba(255,255,255,0.6);
+}
+
+/* MENU SECTIONS */
+.menu-section{
+    max-width:1100px;
+    margin:20px auto 0;
+    padding:0 20px 20px;
+    display:none;
+    animation:fadeIn .25s ease;
+}
+.menu-section.active{
+    display:block;
+}
+
+/* MENU ITEMS */
+.menu-list{
+    list-style:none;
+    padding:0;
+    margin:0;
+}
+.menu-item{
+    margin-bottom:28px;
+    display:flex;
+    gap:20px;
+    align-items:flex-start;
+}
+.menu-item .item-text{
+    flex:1;
+}
+.item-title{
+    font-weight:700;
+    font-size:1.1rem;
+    color:#222;
+    margin-bottom:6px;
+}
+.item-desc{
+    font-size:0.95rem;
+    line-height:1.55;
+    color:#444;
+}
+.item-img{
+    width:160px;
+    height:120px;
+    object-fit:cover;
+    border-radius:6px;
+    box-shadow:0 2px 6px rgba(0,0,0,.15);
+}
+
+/* ORDER NOW PARALLAX RIBBON */
+.order-ribbon{
+    width:100%;
+    height:220px;
+    background-image:url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=1600&q=80');
+    background-size:cover;
+    background-position:center;
+    background-attachment:fixed;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    margin:40px 0;
+    position:relative;
+}
+.order-ribbon::before{
+    content:"";
+    position:absolute;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,0.45);
+}
+.order-ribbon-button{
+    position:relative;
+    padding:14px 34px;
+    background:var(--red);
+    color:white;
+    font-size:1.4rem;
+    font-weight:700;
+    text-decoration:none;
+    border-radius:6px;
+    letter-spacing:2px;
+    box-shadow:0 3px 10px rgba(0,0,0,0.35);
+    transition:0.25s ease;
+}
+.order-ribbon-button:hover{
+    background:var(--red-dark);
+    transform:scale(1.05);
+}
+
+/* BUTCHERS SHOP SECTION */
+.butcher-wrapper{
+    max-width:1100px;
+    margin:60px auto;
+    padding:0 20px 40px;
+    display:flex;
+    gap:24px;
+    align-items:flex-start;
+}
+.butcher-images{
+    flex:0 0 320px;
+    display:flex;
+    flex-direction:column;
+    gap:16px;
+}
+.butcher-images img{
+    width:100%;
+    height:200px;
+    object-fit:cover;
+    border-radius:8px;
+    box-shadow:0 2px 8px rgba(0,0,0,.15);
+}
+.butcher-text{
+    flex:1;
+}
+.butcher-text h2{
+    color:var(--red);
+    font-size:2rem;
+    margin-bottom:16px;
+}
+.butcher-text p{
+    line-height:1.6;
+    margin-bottom:14px;
+}
+
+/* FOOTER */
+.footer{
+    background:var(--red);
+    color:white;
+    text-align:center;
+    padding:20px 10px;
+    margin-top:40px;
+    font-size:1rem;
+    letter-spacing:0.5px;
+}
+
+/* ANIMATIONS */
+@keyframes fadeIn{
+    from{opacity:0; transform:translateY(4px);}
+    to{opacity:1; transform:translateY(0);}
+}
+
+/* MOBILE */
+@media(max-width:900px){
+    .butcher-wrapper{
+        flex-direction:column;
+    }
+    .butcher-images{
+        flex:unset;
+        width:100%;
+        max-width:420px;
+        margin:0 auto;
+    }
+}
+@media(max-width:768px){
+    .menu-item{
+        flex-direction:column;
+    }
+    .item-img{
+        width:100%;
+        height:200px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<!-- NAV -->
+<div class="top-nav">
+    <div class="burger">
+        <span></span><span></span><span></span>
+    </div>
+    <div class="nav-logo">BOFFO'S</div>
+</div>
+
+<!-- SIDE MENU -->
+<div class="menu" id="menu">
+    <div class="menu-logo">BOFFO'S</div>
+    <a href="#about">About Us</a>
+    <a href="services.html">Ready to Eat & Butcher's Shop</a>
+    <a href="catering.html">Prepared Meals & Catering</a>
+    <a href="order.html">Order Now</a>
+    <div id="seasonalMenuLinks"></div>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+    <img src="https://boffos.net/wp-content/uploads/2018/08/boffos-fine-foods.png" class="hero-logo" alt="Boffo's Logo">
+</div>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+    <h1>Sample Menu</h1>
+    <h3>Ready to Eat</h3>
+</div>
+
+<!-- TABS -->
+<div class="menu-tabs">
+    <div class="menu-tab active" data-target="appetizers">Appetizers</div>
+    <div class="menu-tab" data-target="sandwiches">Sandwiches & Salads</div>
+    <div class="menu-tab" data-target="entrees">Entrees & Sides</div>
+    <div class="menu-tab" data-target="readymeals">Ready to Eat Meals</div>
+</div>
+
+<!-- APPETIZERS -->
+<div class="menu-section active" id="appetizers">
+    <ul class="menu-list">
+
+        <li class="menu-item">
+            <div class="item-text">
+                <div class="item-title">Gourmet Cheese Platter</div>
+                <div class="item-desc">
+                    An assortment of your choice of cheeses, garnished with dried and fresh fruit. Served with an assortment of Boffo's famous flatbreads, cheese straws, as well as a variety of gourmet crackers and crostini.
+                </div>
+            </div>
+            <img src="https://images.unsplash.com/photo-1600891964599-f61ba0e24092?auto=format&fit=crop&w=800&q=80" class="item-img" alt="">
+        </li>
+
+        <li class="menu-item">
+            <div class="item-text">
+                <div class="item-title">Charcuterie Platter</div>
+                <div class="item-desc">
+                    Assorted Italian cured meats, cacciatore sausages, chorizo sausages, and Serrano ham. Mixed marinated olives, slow roasted cherry tomatoes, fresh tomato or roasted pepper bruschetta, and various dips.
+                </div>
+            </div>
+            <img src="https://images.unsplash.com/photo-1525755662778-989d0524087e?auto=format&fit=crop&w=800&q=80" class="item-img" alt="">
+        </li>
+
+        <li class="menu-item">
+            <div class="item-text">
+                <div class="item-title">Mini Crab Cakes</div>
+                <div class="item-desc">
+                    Served with chipotle aioli dipping sauce. Crisp on the outside, tender on the inside, and full of rich crab flavour.
+                </div>
+            </div>
+        </li>
+
+        <li class="menu-item">
+            <div class="item-text">
+                <div class="item-title">Crispy Vegetable or Chicken Ginger Spring Rolls</div>
+                <div class="item-desc">
+                    Served with Thai-chile sauce. These Vietnamese-style rolls are crispy and delicious, filled with either seasoned chicken or fresh vegetables and ginger.
+                </div>
+            </div>
+        </li>
+
+        <li class="menu-item">
+            <div class="item-text">
+                <div class="item-title">Skewered Caprese or Greek Salad</div>
+                <div class="item-desc">
+                    Caprese: cherry tomatoes, mini bocconcini cheese, and fresh basil. Greek: crisp veggies and feta cheese. Both are fresh, colourful, and delicious, served as easy-to-enjoy skewers.
+                </div>
+            </div>
+            <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=800&q=80" class="item-img" alt="">
+        </li>
+
+        <li class="menu-item">
+            <div class="item-text">
+                <div class="item-title">Pulled Pork Biscuit Puffs</div>
+                <div class="item-desc">
+                    Smokey and tender pork, served in a warm buttery biscuit. A comforting, handheld bite with rich flavour in every mouthful.
+                </div>
+            </div>
+        </li>
+
+        <li class="menu-item">
+            <div class="item-text">
+                <div class="item-title">Pear and Asiago Bundles</div>
+                <div class="item-desc">
+                    Wrapped in light filo pastry, these bundles combine sweet pear and sharp asiago cheese for a delicate, savoury-sweet appetizer.
+                </div>
+            </div>
+        </li>
+
+        <li class="menu-item">
+            <div class="item-text">
+                <div class="item-title">Roasted Red Pepper and Goat Cheese Tarlettas</div>
+                <div class="item-desc">
+                    A velvety, delicious option featuring roasted red peppers and creamy goat cheese baked into crisp tart shells.
+                </div>
+            </div>
+        </li>
+
+        <li class="menu-item">
+            <div class="item-text">
+                <div class="item-title">Arancini</div>
+                <div class="item-desc">
+                    Golden-fried risotto balls with a cheesy centre, served with a rich tomato dipping sauce for a classic Italian-inspired bite.
+                </div>
+            </div>
+        </li>
+
+        <li class="menu-item">
+            <div class="item-text">
+                <div class="item-title">Wild Mushroom Risotto Balls</div>
+                <div class="item-desc">
+                    Creamy wild mushroom risotto formed into bite-sized balls, lightly breaded and fried until crisp, with deep, earthy flavour.
+                </div>
+            </div>
+        </li>
+
+    </ul>
+</div>
+
+<!-- SANDWICHES & SALADS -->
+<div class="menu-section" id="sandwiches">
+    <ul class="menu-list">
+
+        <li class="menu-item">
+            <div class="item-text">
+                <div class="item-title">Classic Italian Sandwich</div>
+                <div class="item-desc">
+                    Layers of mortadella, salami, and provolone with lettuce, tomato, red onion, and house dressing on a fresh crusty roll.
+                </div>
+            </div>
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQdVTUGr0CDqkhWz70JpnimV-rbVCSQ2FPKvw&s" class="item-img" alt="">
+        </li>
+
+        <li class="menu-item">
+            <div class="item-text">
+                <div class="item-title">Roast Beef & Horseradish Sandwich</div>
+                <div class="item-desc">
+                    Slow-roasted beef piled high with creamy horseradish aioli, caramelized onions, and crisp greens on a soft bun.
+                </div>
+            </div>
+        </li>
+
+        <li class="menu-item">
+            <div class="item-text">
+                <div class="item-title">Turkey Club</div>
+                <div class="item-desc">
+                    Sliced turkey, bacon, lettuce, and tomato stacked on toasted bread with a light mayo spread for a classic deli favourite.
+                </div>
+            </div>
+        </li>
+
+        <li class="menu-item">
+            <div class="item-text">
+                <div class="item-title">Grilled Vegetable Panini</div>
+                <div class="item-desc">
+                    Marinated seasonal vegetables grilled and pressed with mozzarella and basil pesto on artisan bread.
+                </div>
+            </div>
+            <img src="https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=800&q=80" class="item-img" alt="">
+        </li>
+
+        <li class="menu-item">
+            <div class="item-text">
+                <div class="item-title">Prosciutto & Bocconcini Sandwich</div>
+                <div class="item-desc">
+                    Thinly sliced prosciutto, creamy bocconcini, arugula, and tomato with a drizzle of olive oil and balsamic on a ciabatta roll.
+                </div>
+            </div>
+        </li>
+
+        <li class="menu-item">
+            <div class="item-text">
+                <div class="item-title">Chicken Pesto Ciabatta</div>
+                <div class="item-desc">
+                    Grilled chicken breast, roasted red peppers, provolone, and basil pesto on warm ciabatta bread.
+                </div>
+            </div>
+        </li>
+
+        <li class="menu-item">
+            <div class="item-text">
+                <div class="item-title">Caprese Sandwich</div>
+                <div class="item-desc">
+                    Fresh mozzarella, tomato, basil, and a touch of balsamic glaze on a soft roll for a light, fresh option.
+                </div>
+            </div>
+        </li>
+
+        <li class="menu-item">
+            <div class="item-text">
+                <div class="item-title">Chicken Caesar Salad</div>
+                <div class="item-desc">
+                    Crisp romaine lettuce tossed with parmesan, croutons, and grilled chicken in a creamy Caesar dressing.
+                </div>
+            </div>
+        </li>
+
+        <li class="menu-item">
+            <div class="item-text">
+                <div class="item-title">Greek Village Salad</div>
+                <div class="item-desc">
+                    Tomatoes, cucumbers, red onion, olives, and feta cheese dressed with olive oil, lemon, and oregano.
+                </div>
+            </div>
+        </li>
+
+        <li class="menu-item">
+            <div class="item-text">
+                <div class="item-title">Quinoa & Roasted Vegetable Salad</div>
+                <div class="item-desc">
+                    Protein-rich quinoa tossed with roasted seasonal vegetables, fresh herbs, and a light lemon vinaigrette.
+                </div>
+            </div>
+        </li>
+
+    </ul>
+</div>
+
+<!-- ENTREES & SIDES -->
+<div class="menu-section" id="entrees">
+    <ul class="menu-list">
+
+        <li class="menu-item">
+            <div class="item-text">
+                <div class="item-title">Homestyle Lasagna</div>
+                <div class="item-desc">
+                    Layers of pasta, ricotta, seasoned beef, and rich tomato sauce baked until bubbling and golden, finished with melted cheese.
+                </div>
+            </div>
+            <img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=800&q=80" class="item-img" alt="">
+        </li>
+
+        <li class="menu-item">
+            <div class="item-text">
+                <div class="item-title">
+                <div class="item-desc">
+                    Tender grilled chicken served over pasta with a creamy parmesan Alfredo sauce and a hint of garlic.
+                </div>
+            </div>
+        </li>
+
+        <li class="menu-item">
+            <div class="item-text">
+                <div class="item-title">Beef Bourguignon</div>
+                <div class="item-desc">
+                    Slow-braised beef in red wine with mushrooms, onions, and herbs for a deep, comforting flavour.
+                </div>
+            </div>
+        </li>
+
+        <li class="menu-item">
+            <div class="item-text">
+                <div class="item-title">Lemon Herb Chicken</div>
+                <div class="item-desc">
+                    Marinated chicken roasted with lemon, garlic, and fresh herbs for a bright, savoury main course.
+                </div>
+            </div>
+        </li>
+
+        <li class="menu-item">
+            <div class="item-text">
+                <div class="item-title">Stuffed Peppers</div>
+                <div class="item-desc">
+                    Bell peppers filled with rice, ground beef, herbs, and tomato sauce, baked until tender and flavourful.
+                </div>
+            </div>
+        </li>
+
+        <li class="menu-item">
+            <div class="item-text">
+                <div class="item-title">Garlic Roasted Potatoes</div>
+                <div class="item-desc">
+                    Crispy, golden potatoes tossed with garlic, herbs, and olive oil, roasted to perfection.
+                </div>
+            </div>
+            <img src="https://images.unsplash.com/photo-1525755662778-989d0524087e?auto=format&fit=crop&w=800&q=80" class="item-img" alt="">
+        </li>
+
+        <li class="menu-item">
+            <div class="item-text">
+                <div class="item-title">Grilled Seasonal Vegetables</div>
+                <div class="item-desc">
+                    A colourful mix of seasonal vegetables marinated and grilled, served warm or at room temperature.
+                </div>
+            </div>
+        </li>
+
+        <li class="menu-item">
+            <div class="item-text">
+                <div class="item-title">Herb Rice Pilaf</div>
+                <div class="item-desc">
+                    Fluffy rice cooked with herbs, aromatics, and a light stock for a simple, elegant side dish.
+                </div>
+            </div>
+        </li>
+
+        <li class="menu-item">
+            <div class="item-text">
+                <div class="item-title">Creamy Mashed Potatoes</div>
+                <div class="item-desc">
+                    Smooth, buttery mashed potatoes whipped until light and creamy, perfect alongside any main.
+                </div>
+            </div>
+        </li>
+
+    </ul>
+</div>
+
+<!-- READY TO EAT MEALS -->
+<div class="menu-section" id="readymeals">
+    <ul class="menu-list">
+
+        <li class="menu-item">
+            <div class="item-text">
+                <div class="item-title">Chicken Parmesan</div>
+                <div class="item-desc">
+                    Breaded chicken breast topped with marinara and melted cheese, prepared fresh and ready to heat for a comforting homestyle meal.
+                </div>
+            </div>
+            <img src="https://s3-media0.fl.yelpcdn.com/bphoto/uPaPkMeXaefxr_E_zKKhoA/1000s.jpg" class="item-img" alt="">
+        </li>
+
+        <li class="menu-item">
+            <div class="item-text">
+                <div class="item-title">Beef Stew</div>
+                <div class="item-desc">
+                    Slow-cooked beef simmered with root vegetables in a rich, savoury broth for a hearty, ready-to-serve dinner.
+                </div>
+            </div>
+        </li>
+
+        <li class="menu-item">
+            <div class="item-text">
+                <div class="item-title">Shepherd's Pie</div>
+                <div class="item-desc">
+                    Seasoned ground beef layered with vegetables and topped with creamy mashed potatoes, baked until golden.
+                </div>
+            </div>
+        </li>
+
+        <li class="menu-item">
+            <div class="item-text">
+                <div class="item-title">Macaroni & Cheese</div>
+                <div class="item-desc">
+                    A creamy blend of cheeses baked with pasta for a classic comfort dish, ready to heat and enjoy.
+                </div>
+            </div>
+        </li>
+
+        <li class="menu-item">
+            <div class="item-text">
+                <div class="item-title">Chicken Pot Pie</div>
+                <div class="item-desc">
+                    Tender chicken and vegetables in a savoury sauce, wrapped in a flaky pastry crust and baked until golden.
+                </div>
+            </div>
+            <img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=800&q=80" class="item-img" alt="">
+        </li>
+
+        <li class="menu-item">
+            <div class="item-text">
+                <div class="item-title">Vegetable Curry</div>
+                <div class="item-desc">
+                    A medley of vegetables simmered in a fragrant curry sauce, ready to heat and serve with rice or flatbread.
+                </div>
+            </div>
+        </li>
+
+        <li class="menu-item">
+            <div class="item-text">
+                <div class="item-title">Lemon Herb Roasted Chicken</div>
+                <div class="item-desc">
+                    Whole or half chicken roasted with lemon, garlic, and herbs, prepared and ready to reheat for an easy dinner.
+                </div>
+            </div>
+        </li>
+
+        <li class="menu-item">
+            <div class="item-text">
+                <div class="item-title">Stuffed Cabbage Rolls</div>
+                <div class="item-desc">
+                    Cabbage leaves filled with seasoned beef and rice, simmered in a tomato sauce and ready to warm through.
+                </div>
+            </div>
+        </li>
+
+    </ul>
+</div>
+
+<!-- ORDER NOW PARALLAX RIBBON -->
+<div class="order-ribbon">
+    <a href="order.html" class="order-ribbon-button">ORDER NOW</a>
+</div>
+
+<!-- BUTCHERS SHOP -->
+<div class="butcher-wrapper">
+    <div class="butcher-images">
+        <img src="https://www.foodandwine.com/thmb/AjEn8wz0d9WAL5IGlyXmkNRjSt0=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/best-butcher-shops-publican-quality-meats-FT-BLOG1120-a11d7f8eeee1402db9f39a08c95c4d13.jpg" alt="">
+    </div>
+
+    <div class="butcher-text">
+        <h2>Butchers Shop</h2>
+        <p>Your favourite one stop shop in Oakville for fresh meat and salad for easy dinner or lunch. Choose from a wide variety of fresh meat, butchered just right for your family's needs.</p>
+        <p>Pork, beef, lamb, chicken, ham... you name it and we've got it. From freshly shaved deli meats to that perfect sirloin steak, Boffo's can't wait to help you feed your family.</p>
+        <p>Visit us today to see all the possibilities!</p>
+    </div>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+    © 2026 Boffo's Fine Foods — Oakville, Ontario
+</footer>
+
+<!-- JAVASCRIPT -->
+<script src="seasonal-nav.js"></script>
+<script>
+// Burger menu
+const burger = document.querySelector('.burger');
+const menu = document.getElementById('menu');
+
+burger.addEventListener('click', function (e) {
+    e.stopPropagation();
+    menu.classList.toggle('open');
+});
+
+document.addEventListener('click', function (e) {
+    if (!menu.contains(e.target) && !burger.contains(e.target)) {
+        menu.classList.remove('open');
+    }
+});
+
+// Tabs
+const tabs = document.querySelectorAll('.menu-tab');
+const sections = document.querySelectorAll('.menu-section');
+
+tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+        const target = tab.getAttribute('data-target');
+
+        tabs.forEach(t => t.classList.remove('active'));
+        sections.forEach(s => s.classList.remove('active'));
+
+        tab.classList.add('active');
+        document.getElementById(target).classList.add('active');
+
+        window.scrollTo({
+            top: document.querySelector('.page-header').offsetTop + 80,
+            behavior: 'smooth'
+        });
+    });
+});
+</script>
+
+</body>
+</html>

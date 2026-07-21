@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Catering – Boffo's Market & Deli</title>
+
+<style>
+:root{
+    --red:#8B1E1E;
+    --red-dark:#651414;
+    --cream:#F7F2E8;
+    --gold:#C9A55B;
+}
+
+/* BASE */
+body{
+    margin:0;
+    font-family:"Helvetica Neue", Helvetica, Arial, sans-serif;
+    background:var(--cream);
+    color:#333;
+    overflow-x:hidden;
+}
+
+/* TOP NAV */
+.top-nav{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:60px;
+    background:var(--red);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    z-index:9999;
+    box-shadow:0 2px 10px rgba(0,0,0,.15);
+}
+.nav-logo{
+    color:white;
+    font-weight:700;
+    letter-spacing:2px;
+}
+.burger{
+    position:absolute;
+    left:18px;
+    width:28px;
+    height:20px;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+    cursor:pointer;
+}
+.burger span{
+    height:3px;
+    background:white;
+    border-radius:2px;
+}
+
+/* SIDE MENU */
+.menu{
+    position:fixed;
+    top:0;
+    left:-260px;
+    width:260px;
+    height:100%;
+    background:var(--red-dark);
+    padding:80px 20px;
+    box-sizing:border-box;
+    transition:.3s ease;
+    z-index:10000;
+}
+.menu.open{left:0;}
+.menu-logo{
+    color:white;
+    font-size:1.4rem;
+    font-weight:700;
+    text-align:center;
+    margin-bottom:30px;
+}
+.menu a{
+    display:block;
+    color:white;
+    text-decoration:none;
+    padding:14px 0;
+    border-bottom:1px solid rgba(255,255,255,.15);
+}
+
+/* HERO */
+.hero{
+    margin-top:60px;
+    height:140px;
+    background:
+      linear-gradient(rgba(139,30,30,.55),rgba(139,30,30,.55)),
+      url("https://images.unsplash.com/photo-1600891964599-f61ba0e24092?auto=format&fit=crop&w=1600&q=80");
+    background-size:cover;
+    background-position:center;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+.hero-logo{
+    height:70px;
+    width:auto;
+}
+
+/* PAGE CONTENT */
+section{
+    padding:50px 20px;
+}
+
+/* TWO COLUMN LAYOUT */
+.catering-wrapper{
+    max-width:1100px;
+    margin:0 auto;
+    display:flex;
+    gap:40px;
+    align-items:flex-start;
+}
+
+.catering-text{
+    flex:1;
+    font-size:1.05rem;
+    line-height:1.6;
+}
+
+.catering-text h2{
+    color:var(--red);
+    margin-bottom:15px;
+}
+
+/* IMAGES */
+.catering-images{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    gap:20px;
+}
+
+.catering-images img{
+    width:100%;
+    border-radius:8px;
+    object-fit:cover;
+    height:220px;
+}
+
+/* CONTACT SECTION */
+.contact-wrapper{
+    max-width:900px; /* narrower so columns sit closer */
+    margin:40px auto 80px;
+    display:flex;
+    gap:20px; /* smaller gap */
+    align-items:flex-start;
+}
+
+.contact-title{
+    font-size:2.4rem;
+    color:var(--red);
+    margin-bottom:25px;
+    margin-top:0;
+}
+
+.contact-left{
+    flex:1;
+    font-size:1.05rem;
+    line-height:1.6;
+}
+
+.contact-left h3{
+    color:var(--red);
+    margin-bottom:10px;
+    font-size:1.4rem;
+}
+
+.contact-right{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    gap:15px;
+    margin-left:-40px; /* pulls form closer to Contact Us */
+}
+
+.contact-right input,
+.contact-right textarea{
+    width:100%;
+    padding:14px;
+    border:1px solid #ccc;
+    border-radius:6px;
+    font-size:1rem;
+    font-family:inherit;
+}
+
+.contact-right textarea{
+    height:140px;
+    resize:none;
+}
+
+/* SEND BUTTON */
+.send-btn{
+    background:var(--red);
+    color:white;
+    padding:14px;
+    border:none;
+    border-radius:6px;
+    font-size:1.1rem;
+    cursor:pointer;
+    font-weight:600;
+    margin-top:10px;
+}
+.send-btn:hover{
+    background:var(--red-dark);
+}
+
+/* FOOTER */
+.footer{
+    background:var(--red);
+    color:white;
+    text-align:center;
+    padding:20px 10px;
+    margin-top:50px;
+    font-size:1rem;
+}
+
+/* MOBILE */
+@media(max-width:768px){
+    .catering-wrapper,
+    .contact-wrapper{
+        flex-direction:column;
+    }
+    .contact-right{
+        margin-left:0;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<!-- NAV -->
+<div class="top-nav">
+    <div class="burger" onclick="toggleMenu()">
+        <span></span><span></span><span></span>
+    </div>
+    <div class="nav-logo">BOFFO'S</div>
+</div>
+
+<div class="menu" id="menu">
+    <div class="menu-logo">BOFFO'S</div>
+    <a href="index.html">About Us</a>
+    <a href="services.html">Ready to Eat & Butcher's Shop</a>
+    <a href="catering.html">Prepared Meals & Catering</a>
+    <a href="order.html">Order Now</a>
+    <div id="seasonalMenuLinks"></div>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+    <img src="https://boffos.net/wp-content/uploads/2018/08/boffos-fine-foods.png" class="hero-logo" alt="Boffo's Logo">
+</div>
+
+<!-- CATERING SECTION -->
+<section>
+    <div class="catering-wrapper">
+
+        <div class="catering-text">
+            <h2>Catered Events</h2>
+            <p>
+                At Boffo's our catering menu is as unique as you are. For this reason we work one on one with our clientele in order to provide delectable food items that will not disappoint. Unlike many other catering companies, we do not work with a set menu at Boffo's. Instead, we utilize what is seasonal, what is local and what speaks to your culinary needs and desires. There is no limit to what we can offer you and we promise, you will not find a service quite like ours anywhere else.
+            </p>
+
+            <h2>Special Services</h2>
+            <p>
+                We know that when you're hosting a party the last thing you want to do is worry about the food and beverage services that go along with it. For this reason Boffo's offers you an array of food and beverage services as well as our very own on site Chef. Boffo's catering services will ensure that your event will go off without a hitch, while you enjoy your event with your guests. What about the clean up you say? Boffo's will take care of that too!!!
+            </p>
+
+            <p><strong>Sit back, relax and enjoy.</strong></p>
+        </div>
+
+        <div class="catering-images">
+            <img src="https://images.unsplash.com/photo-1543353071-873f17a7a088?auto=format&fit=crop&w=800&q=80" alt="Catered food 1">
+            <img src="https://images.unsplash.com/photo-1529692236671-f1f6cf9683ba?auto=format&fit=crop&w=800&q=80" alt="Catered food 2">
+            <img src="https://images.unsplash.com/photo-1529042410759-befb1204b468?auto=format&fit=crop&w=800&q=80" alt="Catered food 3">
+        </div>
+
+    </div>
+</section>
+
+<!-- CONTACT US -->
+<section>
+    <div class="contact-wrapper">
+
+        <!-- LEFT COLUMN -->
+        <div class="contact-left">
+
+            <h2 class="contact-title">Contact Us</h2>
+
+            <h3>Get in Touch Today!</h3>
+
+            <p>
+                334 Kerr St.<br>
+                Oakville, ON<br>
+                L6K 3B5 Canada
+            </p>
+
+            <p>
+                boffosorders@gmail.com<br>
+                Tel: 905-845-9303
+            </p>
+
+            <p>
+                Monday: Closed<br>
+                Tuesday: 11am–6pm<br>
+                Wednesday: 11am–4pm<br>
+                Thursday: 11am–4pm<br>
+                Friday: 11am–6pm<br>
+                Saturday: 9am–5pm<br>
+                Sunday: Closed
+            </p>
+        </div>
+
+        <!-- RIGHT COLUMN -->
+        <div class="contact-right">
+
+            <input type="text" placeholder="Your Name">
+            <input type="email" placeholder="Your Email">
+            <textarea placeholder="Your Message"></textarea>
+
+            <div style="background:#eee; padding:20px; border-radius:6px; text-align:center;">
+                reCAPTCHA goes here
+            </div>
+
+            <button class="send-btn">Send</button>
+        </div>
+
+    </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+    © 2026 Boffo's Fine Foods — Oakville, Ontario
+</footer>
+
+<script src="seasonal-nav.js"></script>
+<script>
+const menu = document.getElementById("menu");
+const burger = document.querySelector(".burger");
+
+function toggleMenu(){
+    menu.classList.toggle("open");
+}
+
+document.addEventListener("click", (e) => {
+    if(!menu.contains(e.target) && !burger.contains(e.target)){
+        menu.classList.remove("open");
+    }
+});
+</script>
+
+</body>
+</html>

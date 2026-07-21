@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Boffo's Market & Deli</title>
+
+<style>
+:root{
+    --red:#8B1E1E;
+    --red-dark:#651414;
+    --cream:#F7F2E8;
+    --gold:#C9A55B;
+}
+
+/* BASE */
+body{
+    margin:0;
+    font-family:"Helvetica Neue", Helvetica, Arial, sans-serif;
+    background:var(--cream);
+    color:#333;
+    overflow-x:hidden;
+}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:6px;}
+::-webkit-scrollbar-thumb{
+    background:rgba(139,30,30,.4);
+    border-radius:10px;
+}
+
+/* TOP NAV */
+.top-nav{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:60px;
+    background:var(--red);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    z-index:9999;
+    transition:transform .3s ease;
+    box-shadow:0 2px 10px rgba(0,0,0,.15);
+}
+.top-nav.hidden{transform:translateY(-100%);}
+
+.nav-logo{
+    color:white;
+    font-weight:700;
+    letter-spacing:2px;
+}
+
+/* BURGER */
+.burger{
+    position:absolute;
+    left:18px;
+    width:28px;
+    height:20px;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+    cursor:pointer;
+    z-index:10001;
+}
+.burger span{
+    height:3px;
+    background:white;
+    border-radius:2px;
+}
+
+/* SIDE MENU */
+.menu{
+    position:fixed;
+    top:0;
+    left:-260px;
+    width:260px;
+    height:100%;
+    background:var(--red-dark);
+    padding:80px 20px;
+    box-sizing:border-box;
+    transition:.3s ease;
+    z-index:10000;
+}
+.menu.open{left:0;}
+
+.menu-logo{
+    color:white;
+    font-size:1.4rem;
+    font-weight:700;
+    text-align:center;
+    margin-bottom:30px;
+}
+.menu a{
+    display:block;
+    color:white;
+    text-decoration:none;
+    padding:14px 0;
+    border-bottom:1px solid rgba(255,255,255,.15);
+}
+
+/* HERO */
+.hero{
+    margin-top:60px;
+    height:140px;
+    background:
+      linear-gradient(rgba(139,30,30,.55),rgba(139,30,30,.55)),
+      url("https://images.unsplash.com/photo-1600891964599-f61ba0e24092?auto=format&fit=crop&w=1600&q=80");
+    background-size:cover;
+    background-position:center;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+.hero-logo{
+    height:70px;
+    width:auto;
+    filter:drop-shadow(0 2px 4px rgba(0,0,0,0.4));
+}
+
+/* ABOUT */
+section{padding:50px 20px;}
+.about{
+    text-align:center;
+    padding-bottom:20px;
+}
+.about h2{color:var(--red);}
+.about p{
+    max-width:700px;
+    margin:0 auto;
+    line-height:1.6;
+    font-size:1.05rem;
+}
+
+/* SPLIT BUTTONS */
+.split{
+    display:flex;
+    gap:0;
+    margin:20px 0 40px;
+    width:100%;
+}
+
+.split a{
+    flex:1;
+    min-width:0;
+    min-height:380px;
+    position:relative;
+    text-decoration:none;
+    color:white;
+    overflow:hidden;
+    border-radius:0;
+    margin:0;
+    padding:0;
+}
+
+.split a::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:var(--red);
+    background-attachment:fixed;
+    z-index:1;
+}
+
+.split .img{
+    position:absolute;
+    inset:0;
+    background-size:cover;
+    background-position:center;
+    z-index:2;
+    transition:.3s ease;
+}
+
+.ribbon-btn{
+    position:absolute;
+    top:0;
+    left:0;
+    width:100%;
+    padding:16px 0;
+    background:white;
+    color:var(--red);
+    border-bottom:2px solid var(--red);
+    text-align:center;
+    font-weight:700;
+    font-size:1.3rem;
+    z-index:3;
+}
+
+.hover-text{
+    position:absolute;
+    bottom:25px;
+    left:50%;
+    transform:translateX(-50%);
+    color:white;
+    font-size:1.05rem;
+    font-weight:600;
+    opacity:0;
+    transition:.3s ease;
+    z-index:3;
+    width:85%;
+    line-height:1.4;
+}
+
+.split a:hover .img{
+    filter:grayscale(40%) brightness(70%);
+}
+.split a:hover .ribbon-btn{
+    background:var(--red);
+    color:white;
+}
+.split a:hover .hover-text{
+    opacity:1;
+}
+
+/* TESTIMONIALS — FINAL FIXED VERSION */
+/* TESTIMONIALS — FINAL FIX */
+.testimonials{
+    text-align:center;
+    padding:40px 20px;
+}
+
+/* FORCE SLIDER TO HAVE A FIXED, STABLE WIDTH */
+.testimonial-slider {
+    width: 100%;
+    max-width: 700px;
+    margin: 0 auto;
+    overflow: hidden;
+    position: relative;
+
+    /* THIS IS THE FIX */
+    flex: 0 0 700px;
+}
+
+
+.testimonial-track{
+    display:flex;
+    flex-shrink:0;
+    width:auto;
+    transition:transform .6s ease;
+}
+
+.testimonial{
+    flex:0 0 100%;
+    width:100%;
+    padding:25px 20px;
+    box-sizing:border-box;
+    font-size:1.1rem;
+    line-height:1.6;
+    color:#444;
+    font-style:italic;
+    text-align:center;
+    display:block;
+}
+
+/* DESKTOP: center testimonials */
+@media(min-width: 769px){
+    .testimonials{
+        display:flex;
+        flex-direction:column;
+        align-items:center;
+        justify-content:center;
+        min-height:300px;
+        padding-top:60px;
+        padding-bottom:60px;
+    }
+
+	/* FORCE SLIDER TO HAVE A FIXED, STABLE WIDTH */
+    .testimonial-slider {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+
+    .testimonial{
+        display:flex;
+        align-items:center;
+        justify-content:center;
+    }
+}
+
+/* PARALLAX PATIO RIBBON */
+.patio-ribbon{
+    width:100%;
+    height:180px;
+    background:
+      linear-gradient(rgba(0,0,0,0.45),rgba(0,0,0,0.45)),
+      url("https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=1600&q=80");
+    background-size:cover;
+    background-position:center;
+    background-attachment:fixed;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    margin:40px 0;
+}
+
+.patio-ribbon-text{
+    color:white;
+    font-size:2.4rem;
+    font-family:"Brush Script MT", "Lucida Handwriting", cursive;
+    text-shadow:0 3px 8px rgba(0,0,0,0.4);
+}
+
+/* HOURS + LOCATION */
+.hours{
+    text-align:center;
+}
+.hours-container{
+    max-width:900px;
+    margin:0 auto;
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:40px;
+    position:relative;
+}
+.hours-container::before{
+    content:"";
+    position:absolute;
+    left:50%;
+    top:10px;
+    bottom:10px;
+    width:2px;
+    background:#ccc;
+    transform:translateX(-50%);
+}
+
+.hours-left,
+.hours-right{
+    flex:1;
+    text-align:center;
+}
+
+.hours-left{padding-right:90px;}
+.hours-right{padding-left:90px;}
+
+.hours-left h2,
+.hours-right h2{
+    color:var(--red);
+}
+
+.hours-row{
+    display:flex;
+    justify-content:space-between;
+    max-width:380px;
+    margin:10px auto;
+    border-bottom:1px solid #ddd;
+    padding-bottom:5px;
+}
+
+.hours-right iframe{
+    max-width:380px;
+    display:block;
+    margin:10px auto 0;
+    border-radius:8px;
+}
+
+/* OWNER SECTION */
+.owner{
+    display:flex;
+    flex-direction:row;
+    align-items:flex-start;
+    justify-content:center;
+    gap:40px;
+    background:white;
+    padding:40px 20px;
+    text-align:left;
+}
+
+.owner-img{
+    width:300px;
+    height:420px;
+    background:url("https://boffos.net/wp-content/uploads/2018/08/Noel-Lourenco.jpg");
+    background-size:cover;
+    background-position:center;
+    border-radius:6px;
+}
+
+.owner-text{
+    max-width:700px;
+    line-height:1.6;
+    font-size:1.05rem;
+}
+
+.owner-text h2{
+    color:var(--red);
+    margin-bottom:10px;
+}
+
+/* FOOTER */
+.footer{
+    background:var(--red);
+    color:white;
+    text-align:center;
+    padding:20px 10px;
+    margin-top:50px;
+    font-size:1rem;
+    letter-spacing:0.5px;
+}
+.footer-content{
+    max-width:900px;
+    margin:0 auto;
+}
+
+/* MOBILE FIXES */
+@media(max-width:768px){
+
+    .split{
+        flex-direction:column;
+        margin:0;
+        padding:0;
+        width:100%;
+    }
+
+    .split a{
+        width:100%;
+        min-height:300px;
+        margin:0;
+        padding:0;
+        border:none;
+        border-radius:0;
+    }
+
+    .patio-ribbon{
+        background-attachment:scroll;
+        height:150px;
+    }
+    .patio-ribbon-text{
+        font-size:1.9rem;
+        text-align:center;
+    }
+
+    .hours-container{
+        flex-direction:column;
+        align-items:center;
+        text-align:center;
+        gap:25px;
+    }
+    .hours-container::before{
+        display:none;
+    }
+    .hours-left,
+    .hours-right{
+        width:100%;
+        max-width:420px;
+        padding:0;
+    }
+
+    .owner{
+        flex-direction:column;
+        text-align:center;
+        align-items:center;
+    }
+
+    .owner-img{
+        width:90%;
+        max-width:320px;
+        height:auto;
+        aspect-ratio:3/4;
+        background-size:cover;
+        background-position:center;
+        margin:0 auto 20px;
+    }
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- TOP NAV -->
+<div class="top-nav" id="nav">
+    <div class="burger" onclick="toggleMenu()">
+        <span></span><span></span><span></span>
+    </div>
+    <div class="nav-logo">BOFFO'S</div>
+</div>
+
+<!-- SIDE MENU -->
+<div class="menu" id="menu">
+    <div class="menu-logo">BOFFO'S</div>
+    <a href="#about">About Us</a>
+    <a href="services.html">Ready to Eat & Butcher's Shop</a>
+    <a href="catering.html">Prepared Meals & Catering</a>
+    <a href="order.html">Order Now</a>
+    <div id="seasonalMenuLinks"></div>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+    <img src="https://boffos.net/wp-content/uploads/2018/08/boffos-fine-foods.png"
+         alt="Boffo's Logo"
+         class="hero-logo">
+</div>
+
+<!-- ABOUT ABOVE BUTTONS -->
+<section id="about" class="about">
+    <h2>About Us</h2>
+    <p>
+        Boffo's Fine Foods has been a staple in Oakville Ontario Canada for over a decade and in the food business in general for a lot longer. Believing in simple, local ingredients, we strive to put great meals onto your tables. Quality vs. quantity is our mantra at Boffo's. We never compromise a dishes integrity with additives or preservatives. Rest easy knowing that all of the fresh meats you will find at Boffo's are selected from local farms, where animals are treated humanely, live free range, without any use of antibiotics or hormones. Taste the difference at Boffo's.
+    </p>
+</section>
+
+<!-- BUTTONS FULL WIDTH -->
+<div class="split">
+
+    <a href="catering.html">
+        <div class="ribbon-btn">Prepared Meals & Catering</div>
+        <div class="img" style="background-image:url('https://www.boneta.ca/wp-content/uploads/2023/12/prepared-meal.jpg')"></div>
+        <div class="hover-text">
+            Browse our selection of home cooked meals and catered dishes for your next party, event, or even dinner with the family.
+        </div>
+    </a>
+
+    <a href="services.html">
+        <div class="ribbon-btn">Ready to Eat & Butchers Shop</div>
+        <div class="img" style="background-image:url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=1200&q=80')"></div>
+        <div class="hover-text">
+            Let us take the pressure off by presenting delicious, hassle free home cooked meals, and locally sourced meats. Browse our selection of in house delicious dishes.
+        </div>
+    </a>
+
+</div>
+
+<!-- TESTIMONIALS -->
+<section class="testimonials">
+    <h2>Testimonials</h2>
+
+    <div class="testimonial-slider">
+        <div class="testimonial-track" id="testimonialTrack">
+
+            <div class="testimonial">“Love their frozen meals. They make meal planning so easy. The chicken pot pie and the agnolotti are so flavourful and very easy to prepare. Will definitely keep shopping here.”</div>
+
+            <div class="testimonial">“Can’t get fresher meat than this. The product is always changing but there is always something delicious to be found at Boffos. Mom and Pop shop serving the community proud. The owners are extremely friendly and helpful.”</div>
+
+            <div class="testimonial">“This weekend we had Boffo cater our dinner with friends. Beef Bourguignon, roasted veg, garlic mashed potatoes — everything was mouth watering fantastic. Will be doing this again and again.”</div>
+
+            <div class="testimonial">“One of, if not THE, best steak sandwich I’ve ever had. From the people to their service and products, it’s all wonderful. They don’t make ’em like this anymore.”</div>
+
+            <div class="testimonial">“Wonderful. Wonderful. Wonderful. Amazingly delicious prepared foods, dips, meats, frozen soups. Heather and Noel know almost every customer by name. The best Beef Bourguignon ever and chicken soup that beats Mom’s recipe.”</div>
+
+            <div class="testimonial">“I have been a weekly customer at Boffo's for many years. I trust the quality of the meat and the skill of those preparing it. Extensive butcher counter and amazing prepared foods. Service is informed and friendly.”</div>
+
+            <div class="testimonial">“A gem in Oakville. Always fresh and delicious. Cannot say enough good things about this place. Must visit.”</div>
+
+        </div>
+    </div>
+</section>
+
+<!-- PARALLAX PATIO RIBBON -->
+<div class="patio-ribbon">
+    <div class="patio-ribbon-text">
+        Take out or dine in with our renovated patio
+    </div>
+</div>
+
+<!-- HOURS + LOCATION -->
+<section class="hours">
+    <div class="hours-container">
+
+        <div class="hours-left">
+            <h2>Hours</h2>
+            <div class="hours-row"><span>Mon–Fri</span><span>9–6</span></div>
+            <div class="hours-row"><span>Sat</span><span>9–5</span></div>
+            <div class="hours-row"><span>Sun</span><span>Closed</span></div>
+        </div>
+
+        <div class="hours-right">
+            <h2>Location</h2>
+            <p>334 Kerr St, Oakville, ON L6K 3B5</p>
+            <iframe
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d4790.306437565437!2d-79.68426122383426!3d43.443574771112786!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x882b5cf72d079ee5%3A0xb292a67f96b71807!2sBoffo%E2%80%99s%20Fine%20Foods!5e1!3m2!1sen!2sca!4v1781573609014!5m2!1sen!2sca"
+                width="100%"
+                height="250"
+                style="border:0; margin-top:10px;"
+                allowfullscreen
+                loading="lazy">
+            </iframe>
+        </div>
+
+    </div>
+</section>
+
+<!-- OWNER -->
+<section class="owner">
+
+    <div class="owner-img"></div>
+
+    <div class="owner-text">
+        <h2>Meet the Owner</h2>
+        <p>
+            When Ugo & Margherita first opened up shop in Toronto Ontario, Canada as the Cabbage Town Butcher shop, they relied on family and great staff to help propel their growing business. Now residing in Oakville, Boffo's continues to value these same morals via its new owners Noel Lourenco and Heather McGregor. Boffo's wouldn't be what it is today if it wasn't for the enthusiasm and talent of our amazing staff. The food coming out of the kitchen is made with love, the meats are prepared by master hands and the front of house staff is knowledgeable and friendly. Under the guidance of chef Noel who has been a part of the Boffo's family since 2000, we promise to continue to produce tantalizing, local, seasonal dishes that can not be found anywhere in and around the GTA. We ensure that when you walk through our doors, you will bare witness to the difference quality makes.
+        </p>
+    </div>
+
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+    <div class="footer-content">
+        © 2026 Boffo's Fine Foods — Oakville, Ontario
+    </div>
+</footer>
+
+<script src="seasonal-nav.js"></script>
+<script>
+/* NAV HIDE ON SCROLL */
+let last = 0;
+const nav = document.getElementById("nav");
+const menu = document.getElementById("menu");
+const burger = document.querySelector(".burger");
+
+window.addEventListener("scroll", () => {
+    const current = window.pageYOffset;
+    if(current > last && current > 80){
+        nav.classList.add("hidden");
+    } else {
+        nav.classList.remove("hidden");
+    }
+    last = current;
+});
+
+/* BURGER MENU */
+function toggleMenu(){
+    menu.classList.toggle("open");
+}
+
+function closeMenu(){
+    menu.classList.remove("open");
+}
+
+document.addEventListener("click", (e) => {
+    if(!menu.contains(e.target) && !burger.contains(e.target)){
+        closeMenu();
+    }
+});
+
+/* TESTIMONIAL AUTO-SLIDER — PIXEL-PERFECT VERSION */
+let index = 0;
+const track = document.getElementById("testimonialTrack");
+const slides = Array.from(track.children);
+const total = slides.length;
+
+function updateWidths(){
+    const slider = document.querySelector(".testimonial-slider");
+    const sliderWidth = slider.offsetWidth;
+
+    // Set each slide to the exact pixel width
+    slides.forEach(slide => {
+        slide.style.width = sliderWidth + "px";
+        slide.style.flex = "0 0 " + sliderWidth + "px";
+    });
+
+    // Track width = N × slide width
+    track.style.width = (sliderWidth * total) + "px";
+
+    // Reposition to the correct slide after resize
+    track.style.transform = `translateX(-${index * sliderWidth}px)`;
+}
+
+// Initial setup
+updateWidths();
+
+// Recalculate on window resize
+window.addEventListener("resize", updateWidths);
+
+// Auto-slide every 4 seconds
+setInterval(() => {
+    index = (index + 1) % total;
+    const sliderWidth = document.querySelector(".testimonial-slider").offsetWidth;
+    track.style.transform = `translateX(-${index * sliderWidth}px)`;
+}, 4000);
+</script>

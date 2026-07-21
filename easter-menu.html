@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Easter Menu | Boffo's Fine Foods</title>
+<link rel="stylesheet" href="seasonal-menu.css">
+</head>
+
+<body>
+
+<!-- TOP NAV -->
+<div class="top-nav" id="nav">
+    <div class="burger" onclick="toggleMenu()">
+        <span></span><span></span><span></span>
+    </div>
+    <div class="nav-logo">BOFFO'S</div>
+    <div class="cart-toggle" onclick="toggleCart()">
+        🛒<span class="cart-count" id="cartCount">0</span>
+    </div>
+</div>
+
+<!-- SIDE MENU -->
+<div class="menu" id="menu">
+    <div class="menu-logo">BOFFO'S</div>
+    <a href="index.html#about">About Us</a>
+    <a href="services.html">Ready to Eat & Butcher's Shop</a>
+    <a href="catering.html">Prepared Meals & Catering</a>
+    <a href="order.html">Order Now</a>
+    <div id="seasonalMenuLinks"></div>
+</div>
+
+<!-- CART PANEL -->
+<div class="cart-panel" id="cartPanel">
+    <h3>Your Cart</h3>
+    <div id="cartItems"><p class="cart-empty">Your cart is empty.</p></div>
+    <div class="cart-subtotal" id="cartSubtotal" style="display:none;">Subtotal: <span id="subtotalAmount">$0.00</span></div>
+    <button class="checkout-btn" id="checkoutBtn" disabled onclick="openCheckout()">Checkout</button>
+    <p class="cart-disclaimer">Prices shown are placeholders for now and will be replaced with final pricing.</p>
+</div>
+
+<!-- CHECKOUT OVERLAY -->
+<div class="checkout-overlay" id="checkoutOverlay" onclick="if(event.target===this) closeCheckout()">
+    <div class="checkout-modal">
+        <button class="checkout-close" onclick="closeCheckout()">✕</button>
+        <div id="checkoutContent"></div>
+    </div>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+    <div>
+        <h1>Easter Menu</h1>
+        <p>Order ahead for holiday pickup — no delivery available</p>
+    </div>
+</div>
+
+<!-- Shown only when the admin has toggled this menu off -->
+<div class="note-box" id="menuClosedMessage" style="display:none; margin-top:50px;">
+    Easter ordering isn't open yet — please check back soon, or contact us directly with any questions.
+</div>
+
+<div id="menuContent">
+
+<!-- INTRO -->
+<section class="intro">
+    <h2>Boffo's Easter Menu</h2>
+    <p>
+        Placeholder menu — send over the real Easter lineup whenever you have it, and these items get swapped in.
+    </p>
+</section>
+
+<!-- READY TO HEAT & EAT -->
+<section style="padding-top:0;">
+    <div class="menu-list-wrap">
+        <h3>Ready to Heat & Eat</h3>
+        <div class="menu-list">
+
+            <div class="menu-list-row">
+                <span class="icon">🐣</span>
+                <span class="item-name">Scalloped Potatoes</span>
+                <span class="item-price">$8.99</span>
+                <button class="add-btn" data-item="scalloped" onclick="addToCart(this.dataset.item)">Add</button>
+            </div>
+
+            <div class="menu-list-row">
+                <span class="icon">🐣</span>
+                <span class="item-name">Glazed Carrots</span>
+                <span class="item-price">$7.99</span>
+                <button class="add-btn" data-item="glazedcarrots" onclick="addToCart(this.dataset.item)">Add</button>
+            </div>
+
+            <div class="menu-list-row">
+                <span class="icon">🐣</span>
+                <span class="item-name">Asparagus Almondine</span>
+                <span class="item-price">$9.99</span>
+                <button class="add-btn" data-item="asparagus" onclick="addToCart(this.dataset.item)">Add</button>
+            </div>
+
+            <div class="menu-list-row">
+                <span class="icon">🐣</span>
+                <span class="item-name">Deviled Eggs (dozen)</span>
+                <span class="item-price">$9.99</span>
+                <button class="add-btn" data-item="deviledeggs" onclick="addToCart(this.dataset.item)">Add</button>
+            </div>
+
+            <div class="menu-list-row">
+                <span class="icon">🐣</span>
+                <span class="item-name">Hot Cross Buns (6-pack)</span>
+                <span class="item-price">$7.99</span>
+                <button class="add-btn" data-item="hotcrossbuns" onclick="addToCart(this.dataset.item)">Add</button>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- DINNER FOR ONE -->
+<section style="padding-top:0;">
+    <div class="menu-list-wrap">
+        <h3>Dinner for One</h3>
+        <div class="dinner-cards">
+            <div class="dinner-card">
+                <div class="ribbon">Ham Dinner for One</div>
+                <div class="dinner-card-body">
+                    <p>Sliced honey glazed ham, scalloped potatoes & glazed carrots.</p>
+                    <div class="price-row">
+                        <span class="price">$21.99</span>
+                        <button class="add-btn" data-item="hamdinner" onclick="addToCart(this.dataset.item)">Add to Cart</button>
+                    </div>
+                </div>
+            </div>
+            <div class="dinner-card">
+                <div class="ribbon">Lamb Dinner for One</div>
+                <div class="dinner-card-body">
+                    <p>Roasted leg of lamb, mint sauce & roasted potatoes.</p>
+                    <div class="price-row">
+                        <span class="price">$24.99</span>
+                        <button class="add-btn" data-item="lambdinner" onclick="addToCart(this.dataset.item)">Add to Cart</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- READY TO COOK -->
+<section style="padding-top:0;">
+    <div class="menu-list-wrap">
+        <h3>Ready to Cook</h3>
+        <p class="list-disclaimer">These are normally priced by weight — flat placeholder prices shown for now.</p>
+        <div class="menu-list">
+
+            <div class="menu-list-row">
+                <span class="icon">🐣</span>
+                <span class="item-name">Honey Glazed Ham</span>
+                <span class="item-price">$54.99</span>
+                <button class="add-btn" data-item="honeyglazedham" onclick="addToCart(this.dataset.item)">Add</button>
+            </div>
+
+            <div class="menu-list-row">
+                <span class="icon">🐣</span>
+                <span class="item-name">Leg of Lamb</span>
+                <span class="item-price">$49.99</span>
+                <button class="add-btn" data-item="leglamb" onclick="addToCart(this.dataset.item)">Add</button>
+            </div>
+
+            <div class="menu-list-row">
+                <span class="icon">🐣</span>
+                <span class="item-name">Rack of Lamb</span>
+                <span class="item-price">$44.99</span>
+                <button class="add-btn" data-item="racklamb" onclick="addToCart(this.dataset.item)">Add</button>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="note-box">
+        Need something specific? We offer custom & specialty cuts on request.
+    </div>
+</section>
+
+</div>
+<!-- end menuContent -->
+
+<!-- FOOTER -->
+<footer class="footer">
+    <div class="footer-content">
+        © 2026 Boffo's Fine Foods — Oakville, Ontario
+    </div>
+</footer>
+
+<script>
+    window.CURRENT_SEASONAL_SLUG = 'easter';
+    window.PICKUP_MIN = '2027-03-25';
+    window.PICKUP_MAX = '2027-03-27';
+    window.CONFIRMATION_EMOJI = '🐣';
+
+    window.MENU_ITEMS = {
+        scalloped:       { name: 'Scalloped Potatoes', price: 8.99 },
+        glazedcarrots:   { name: 'Glazed Carrots', price: 7.99 },
+        asparagus:       { name: 'Asparagus Almondine', price: 9.99 },
+        deviledeggs:     { name: 'Deviled Eggs (dozen)', price: 9.99 },
+        hotcrossbuns:    { name: 'Hot Cross Buns (6-pack)', price: 7.99 },
+        hamdinner:       { name: 'Ham Dinner for One', price: 21.99 },
+        lambdinner:      { name: 'Lamb Dinner for One', price: 24.99 },
+        honeyglazedham:  { name: 'Honey Glazed Ham', price: 54.99 },
+        leglamb:         { name: 'Leg of Lamb', price: 49.99 },
+        racklamb:        { name: 'Rack of Lamb', price: 44.99 }
+    };
+</script>
+<script src="seasonal-nav.js"></script>
+<script src="seasonal-menu.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Christmas Menu | Boffo's Fine Foods</title>
+<link rel="stylesheet" href="seasonal-menu.css">
+<style>
+/* ── ADD ITEM MODAL extras (not in shared CSS) ── */
+.weight-badge{
+    display:inline-block;
+    background:#f5ebe0;
+    color:var(--red-dark);
+    font-size:.65rem;
+    font-weight:700;
+    letter-spacing:.5px;
+    text-transform:uppercase;
+    padding:2px 6px;
+    border-radius:3px;
+    margin-left:6px;
+    vertical-align:middle;
+}
+.meat-disclaimer{
+    font-size:.8rem;
+    color:#888;
+    font-style:italic;
+    margin:8px 0 0;
+    padding:8px 12px;
+    background:#f9f6f0;
+    border-left:3px solid var(--gold);
+    border-radius:0 4px 4px 0;
+}
+.add-modal-title{
+    font-size:1.1rem;
+    font-weight:700;
+    color:var(--red-dark);
+    margin:0 0 4px;
+}
+.add-modal-price{
+    font-size:.88rem;
+    color:#888;
+    margin:0 0 18px;
+}
+.add-modal-section-label{
+    font-size:.78rem;
+    font-weight:700;
+    color:#555;
+    text-transform:uppercase;
+    letter-spacing:.5px;
+    margin-bottom:8px;
+}
+.modal-qty-row{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:16px;
+}
+.modal-qty-btn{
+    width:32px;
+    height:32px;
+    border:1px solid #ccc;
+    background:var(--cream);
+    border-radius:4px;
+    font-size:1.1rem;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    line-height:1;
+}
+.modal-qty-btn:hover{ background:#e8e0d0; }
+.modal-qty-val{
+    font-size:1.1rem;
+    font-weight:700;
+    min-width:28px;
+    text-align:center;
+}
+.qty-warning{
+    background:#fff8e6;
+    border:1px solid var(--gold);
+    border-radius:4px;
+    padding:9px 12px;
+    font-size:.82rem;
+    color:#7a5000;
+    margin-bottom:14px;
+    display:none;
+}
+.add-modal-notes{
+    width:100%;
+    padding:10px;
+    border:1px solid #ccc;
+    border-radius:4px;
+    font-size:.9rem;
+    font-family:inherit;
+    resize:vertical;
+    min-height:80px;
+}
+.add-modal-notes:focus{ outline:2px solid var(--gold); }
+
+/* Time picker */
+.time-loading{
+    font-size:.82rem;
+    color:#888;
+    font-style:italic;
+    margin-top:4px;
+}
+.time-select{
+    width:100%;
+    padding:10px;
+    border:1px solid #ccc;
+    border-radius:4px;
+    font-size:.95rem;
+    font-family:inherit;
+    background:white;
+}
+.time-select:disabled{ background:#f5f5f5; color:#aaa; }
+
+/* Cart item notes */
+.cart-item-notes{
+    font-size:.75rem;
+    color:#888;
+    font-style:italic;
+    display:block;
+    margin-top:2px;
+}
+</style>
+</head>
+<body>
+
+<!-- TOP NAV -->
+<div class="top-nav" id="nav">
+    <div class="burger" onclick="toggleMenu()"><span></span><span></span><span></span></div>
+    <div class="nav-logo">BOFFO'S</div>
+    <div class="cart-toggle" onclick="toggleCart()">
+        🛒<span class="cart-count" id="cartCount">0</span>
+    </div>
+</div>
+
+<!-- SIDE MENU -->
+<div class="menu" id="menu">
+    <div class="menu-logo">BOFFO'S</div>
+    <a href="index.html#about">About Us</a>
+    <a href="services.html">Ready to Eat & Butcher's Shop</a>
+    <a href="catering.html">Prepared Meals & Catering</a>
+    <a href="order.html">Order Now</a>
+    <div id="seasonalMenuLinks"></div>
+</div>
+
+<!-- CART PANEL -->
+<div class="cart-panel" id="cartPanel">
+    <h3>Your Cart</h3>
+    <div id="cartItems"><p class="cart-empty">Your cart is empty.</p></div>
+    <div class="cart-subtotal" id="cartSubtotal" style="display:none;">
+        Subtotal: <span id="subtotalAmount">$0.00</span>
+    </div>
+    <button class="checkout-btn" id="checkoutBtn" disabled onclick="openCheckout()">Checkout</button>
+    <p class="cart-disclaimer">Prices shown are placeholders and will be replaced with final pricing.</p>
+</div>
+
+<!-- ── ADD ITEM MODAL ── -->
+<div class="checkout-overlay" id="addItemModal" onclick="if(event.target===this) closeAddItemModal()">
+    <div class="checkout-modal">
+        <button class="checkout-close" onclick="closeAddItemModal()">✕</button>
+
+        <p class="add-modal-title" id="addModalTitle"></p>
+        <p class="add-modal-price" id="addModalPrice"></p>
+
+        <div class="add-modal-section-label">Quantity</div>
+        <div class="modal-qty-row">
+            <button class="modal-qty-btn" onclick="changeModalQty(-1)">−</button>
+            <span class="modal-qty-val" id="modalQtyVal">1</span>
+            <button class="modal-qty-btn" onclick="changeModalQty(1)">+</button>
+        </div>
+
+        <div class="qty-warning" id="qtyWarning">
+            That's a large quantity — please double-check before adding.
+        </div>
+
+        <div class="add-modal-section-label">Special requests <span style="font-weight:400;color:#aaa;">(optional)</span></div>
+        <textarea class="add-modal-notes" id="addModalNotes"
+            placeholder="e.g. no onions, extra sauce, gluten-free packaging…"></textarea>
+
+        <button class="place-order-btn" id="addModalConfirmBtn"
+            onclick="confirmAddModal()" style="margin-top:14px;">Add to Cart</button>
+    </div>
+</div>
+
+<!-- CHECKOUT OVERLAY -->
+<div class="checkout-overlay" id="checkoutOverlay" onclick="if(event.target===this) closeCheckout()">
+    <div class="checkout-modal">
+        <button class="checkout-close" onclick="closeCheckout()">✕</button>
+        <div id="checkoutContent"></div>
+    </div>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+    <div>
+        <h1>Christmas Menu</h1>
+        <p>Order ahead for holiday pickup — no delivery available</p>
+    </div>
+</div>
+
+<!-- Shown when this menu is toggled off by admin -->
+<div class="note-box" id="menuClosedMessage" style="display:none; margin-top:50px;">
+    Christmas ordering isn't open yet — please check back soon, or contact us directly with any questions.
+</div>
+
+<div id="menuContent"><p style="text-align:center;padding:40px;color:#888;">Loading menu…</p></div>
+
+<footer class="footer">
+    <div class="footer-content">© 2026 Boffo's Fine Foods — Oakville, Ontario</div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js"></script>
+<script>
+/* ── PAGE CONFIG (set per-season) ── */
+window.CURRENT_SEASONAL_SLUG = 'christmas';
+window.PICKUP_MIN = '2026-12-20'; // fallback — overwritten by loadMenuConfig()
+window.PICKUP_MAX = '2026-12-24';
+window.CONFIRMATION_EMOJI = '🎄';
+const LARGE_QTY_THRESHOLD = 10;
+
+/* ── MENU CONFIG (from Supabase, kept live via Realtime) ── */
+async function loadMenuConfig(){
+    try{
+        const { data: cfg, error } = await sb.from('menu_config')
+            .select('*').eq('menu_slug', window.CURRENT_SEASONAL_SLUG).single();
+        if(error || !cfg) return;
+        if(cfg.pickup_start) window.PICKUP_MIN = cfg.pickup_start;
+        if(cfg.pickup_end)   window.PICKUP_MAX = cfg.pickup_end;
+        // Update any open date picker constraints immediately
+        const dayInput = document.getElementById("pickupDay");
+        if(dayInput){
+            dayInput.min = window.PICKUP_MIN;
+            dayInput.max = window.PICKUP_MAX;
+        }
+    } catch(e){ console.warn("Couldn't load menu config", e); }
+}
+
+/* ── MENU DATA (fetched from server) ── */
+let MENU_ITEMS = {}; // populated by loadMenuItems()
+
+async function loadMenuItems(){
+    try {
+        const { data: rows, error } = await sb.from('menu_items')
+            .select('id, category, name, price, section, sort_order')
+            .eq('menu_slug', window.CURRENT_SEASONAL_SLUG)
+            .order('sort_order');
+        if (error || !rows || !rows.length) throw new Error('Failed to load menu');
+
+        // Group by category (the old endpoint did this server-side)
+        const grouped = {};
+        rows.forEach(r => {
+            if (!grouped[r.category]) grouped[r.category] = [];
+            grouped[r.category].push(r);
+        });
+
+        // Build MENU_ITEMS lookup keyed by id for the cart
+        Object.values(grouped).flat().forEach(item => {
+            MENU_ITEMS[item.id] = item;
+        });
+
+        renderMenuSections(grouped);
+    } catch(e) {
+        console.error('Menu load error:', e);
+        document.getElementById("menuContent").innerHTML =
+            '<div class="note-box" style="margin:40px auto;max-width:600px;">Couldn\'t load the menu. Please refresh the page or call us at 905-845-9303.</div>';
+    }
+}
+
+function renderMenuSections(grouped){
+    // Define which categories map to which display section
+    const SECTION_ORDER = ["Ready to Heat & Eat", "Dinner for One", "Ready to Cook"];
+
+    // Split into side-lists and dinner cards
+    const readyToHeat = grouped["Ready to Heat & Eat"] || [];
+    const dinnersForOne = grouped["Dinner for One"] || [];
+    const readyToCook = grouped["Ready to Cook"] || [];
+
+    function itemRow(item){
+        const isMeat = item.section === 'meat';
+        return `
+        <div class="menu-list-row">
+            <span class="icon">🎄</span>
+            <span class="item-name">
+                ${item.name}
+                ${isMeat ? '<span class="weight-badge">by weight</span>' : ''}
+            </span>
+            <span class="item-price">
+                ${isMeat ? '<span style="font-size:.75rem;color:#aaa;">est.</span> ' : ''}$${item.price.toFixed(2)}
+            </span>
+            <button class="add-btn" onclick="addToCart(${item.id})">Add</button>
+        </div>`;
+    }
+
+    function dinnerCard(item){
+        return `
+        <div class="dinner-card">
+            <div class="ribbon">${item.name}</div>
+            <div class="dinner-card-body">
+                <div class="price-row">
+                    <span class="price">$${item.price.toFixed(2)}</span>
+                    <button class="add-btn" onclick="addToCart(${item.id})">Add to Cart</button>
+                </div>
+            </div>
+        </div>`;
+    }
+
+    const menuContent = document.getElementById("menuContent");
+
+    let html = `
+    <section class="intro">
+        <h2>Boffo's Christmas Menu</h2>
+        <p>From oven-ready sides to fully cooked dinners-for-one and raw cuts for your own table, here's everything on this year's Christmas menu.</p>
+    </section>`;
+
+    if (readyToHeat.length) {
+        html += `
+        <section style="padding-top:0;"><div class="menu-list-wrap">
+            <h3>Ready to Heat &amp; Eat</h3>
+            <div class="menu-list">${readyToHeat.map(itemRow).join("")}</div>
+        </div></section>`;
+    }
+
+    if (dinnersForOne.length) {
+        html += `
+        <section style="padding-top:0;"><div class="menu-list-wrap">
+            <h3>Dinner for One</h3>
+            <div class="dinner-cards">${dinnersForOne.map(dinnerCard).join("")}</div>
+        </div></section>`;
+    }
+
+    if (readyToCook.length) {
+        html += `
+        <section style="padding-top:0;"><div class="menu-list-wrap">
+            <h3>Ready to Cook</h3>
+            <p class="list-disclaimer">Normally priced by weight — placeholder prices shown for reference.</p>
+            <div class="menu-list">${readyToCook.map(itemRow).join("")}</div>
+            <p class="meat-disclaimer">⚖ Meat items are priced by weight. The price shown is an estimate — we'll weigh your order and email you the final price before pickup.</p>
+        </div>
+        <div class="note-box">Need something specific? We offer custom &amp; specialty cuts on request.</div>
+        </section>`;
+    }
+
+    menuContent.innerHTML = html;
+}
+
+/* ── NAV / MENU ── */
+let lastScroll = 0;
+const nav = document.getElementById("nav");
+const menu = document.getElementById("menu");
+const burger = document.querySelector(".burger");
+const cartPanel = document.getElementById("cartPanel");
+const cartToggleEl = document.querySelector(".cart-toggle");
+const checkoutOverlay = document.getElementById("checkoutOverlay");
+
+window.addEventListener("scroll", () => {
+    const cur = window.pageYOffset;
+    nav.classList.toggle("hidden", cur > lastScroll && cur > 80);
+    lastScroll = cur;
+});
+function toggleMenu(){ menu.classList.toggle("open"); cartPanel.classList.remove("open"); }
+function toggleCart(){ cartPanel.classList.toggle("open"); menu.classList.remove("open"); }
+function closeCart(){ cartPanel.classList.remove("open"); }
+document.addEventListener("click", e => {
+    if (!menu.contains(e.target) && !burger.contains(e.target)) menu.classList.remove("open");
+    if (!cartPanel.contains(e.target) && !cartToggleEl.contains(e.target)) closeCart();
+});
+
+/* ── CART STATE ── */
+let cart = [];
+let nextCartId = 1;
+
+/* Opens the add-item modal instead of adding directly */
+let pendingModalItem = null;
+let modalQty = 1;
+
+function addToCart(itemId){
+    const item = MENU_ITEMS[itemId];
+    if (!item) return;
+    openAddItemModal(item.name, item.price);
+}
+
+/* ── ADD ITEM MODAL ── */
+function openAddItemModal(name, price){
+    pendingModalItem = { name, price };
+    modalQty = 1;
+    document.getElementById("addModalTitle").textContent = name;
+    document.getElementById("addModalPrice").textContent = '$' + price.toFixed(2) + ' each';
+    document.getElementById("modalQtyVal").textContent = "1";
+    document.getElementById("addModalNotes").value = "";
+    document.getElementById("qtyWarning").style.display = "none";
+    document.getElementById("addModalConfirmBtn").textContent = "Add to Cart";
+    document.getElementById("addItemModal").classList.add("open");
+    menu.classList.remove("open");
+    closeCart();
+}
+
+function closeAddItemModal(){
+    document.getElementById("addItemModal").classList.remove("open");
+    pendingModalItem = null;
+}
+
+function changeModalQty(delta){
+    modalQty = Math.max(1, modalQty + delta);
+    document.getElementById("modalQtyVal").textContent = modalQty;
+    const warn = document.getElementById("qtyWarning");
+    warn.style.display = modalQty >= LARGE_QTY_THRESHOLD ? "block" : "none";
+    document.getElementById("addModalConfirmBtn").textContent =
+        modalQty >= LARGE_QTY_THRESHOLD
+            ? `Yes, add ${modalQty} to cart`
+            : "Add to Cart";
+}
+
+function confirmAddModal(){
+    if (!pendingModalItem) return;
+    const notes = document.getElementById("addModalNotes").value.trim();
+    addItemToCartState(pendingModalItem.name, pendingModalItem.price, modalQty, notes);
+    closeAddItemModal();
+    cartPanel.classList.add("open");
+}
+
+function addItemToCartState(name, price, qty, notes){
+    // Same name + same notes → merge qty; different notes → separate line
+    const existing = cart.find(i => i.name === name && i.notes === notes);
+    if (existing){
+        existing.qty += qty;
+    } else {
+        cart.push({ id: nextCartId++, name, price, qty, notes });
+    }
+    renderCart();
+}
+
+function changeQty(id, delta){
+    const item = cart.find(i => i.id === id);
+    if (!item) return;
+    item.qty += delta;
+    if (item.qty <= 0) cart = cart.filter(i => i.id !== id);
+    renderCart();
+}
+
+function removeFromCart(id){
+    cart = cart.filter(i => i.id !== id);
+    renderCart();
+}
+
+function renderCart(){
+    const container = document.getElementById("cartItems");
+    const countEl = document.getElementById("cartCount");
+    const subtotalWrap = document.getElementById("cartSubtotal");
+    const subtotalAmount = document.getElementById("subtotalAmount");
+    const checkoutBtn = document.getElementById("checkoutBtn");
+
+    const totalCount = cart.reduce((s, i) => s + i.qty, 0);
+    countEl.textContent = totalCount;
+    checkoutBtn.disabled = cart.length === 0;
+
+    if (cart.length === 0){
+        container.innerHTML = '<p class="cart-empty">Your cart is empty.</p>';
+        subtotalWrap.style.display = "none";
+        return;
+    }
+
+    container.innerHTML = cart.map(item => `
+        <div class="cart-item">
+            <div class="cart-item-info">
+                <span class="cart-item-name">${item.name}</span>
+                ${item.notes ? `<span class="cart-item-notes">${item.notes}</span>` : ''}
+                <span class="cart-item-price">$${item.price.toFixed(2)} each</span>
+            </div>
+            <div class="cart-item-controls">
+                <button onclick="changeQty(${item.id}, -1)">−</button>
+                <span>${item.qty}</span>
+                <button onclick="changeQty(${item.id}, 1)">+</button>
+                <button class="remove-btn" onclick="removeFromCart(${item.id})">✕</button>
+            </div>
+        </div>`).join("");
+
+    const subtotal = cart.reduce((s, i) => s + i.price * i.qty, 0);
+    subtotalAmount.textContent = "$" + subtotal.toFixed(2);
+    subtotalWrap.style.display = "block";
+}
+
+/* ── CHECKOUT ── */
+async function openCheckout(){
+    if (cart.length === 0) return;
+    await loadMenuConfig(); // always fetch fresh dates/hours before showing checkout
+    renderCheckoutForm();
+    checkoutOverlay.classList.add("open");
+    closeCart();
+}
+function closeCheckout(){ checkoutOverlay.classList.remove("open"); }
+
+function renderCheckoutForm(){
+    // Refresh config values right before building the form so any admin
+    // schedule changes that arrived via polling are applied immediately
+    const minDate = window.PICKUP_MIN || '';
+    const maxDate = window.PICKUP_MAX || '';
+    const content = document.getElementById("checkoutContent");
+    const subtotal = cart.reduce((s, i) => s + i.price * i.qty, 0);
+
+    const summaryRows = cart.map(i => `
+        <div class="order-summary-row">
+            <span>
+                ${i.qty} × ${i.name}
+                ${i.notes ? `<em style="display:block;font-size:.78em;color:#888;">${i.notes}</em>` : ''}
+            </span>
+            <span>$${(i.price * i.qty).toFixed(2)}</span>
+        </div>`).join("");
+
+    const hasMeat = cart.some(i => {
+        const item = MENU_ITEMS[Object.keys(MENU_ITEMS).find(k => MENU_ITEMS[k].name === i.name)];
+        return item && item.section === 'meat';
+    });
+
+    const meatNote = hasMeat
+        ? `<div style="background:#f9f6f0;border-left:3px solid var(--gold);padding:10px 14px;margin-top:12px;font-size:.82rem;color:#7a5000;border-radius:0 4px 4px 0;">
+               ⚖ Your order includes meat items priced by weight. You'll receive a separate email confirming the final price once your order is weighed.
+           </div>`
+        : '';
+
+    content.innerHTML = `
+        <h3>Checkout</h3>
+        <div class="order-summary">
+            ${summaryRows}
+            <div class="order-summary-total"><span>Total</span><span>$${subtotal.toFixed(2)}</span></div>
+        </div>
+        ${meatNote}
+        <form class="checkout-form" id="checkoutForm" onsubmit="handleCheckoutSubmit(event)">
+            <label for="custName">Full Name</label>
+            <input type="text" id="custName" required>
+
+            <label for="custEmail">Email</label>
+            <input type="email" id="custEmail" required>
+
+            <label for="custPhone">Phone Number</label>
+            <input type="tel" id="custPhone" required>
+
+            <label for="pickupDay">Pickup Day</label>
+            <input type="date" id="pickupDay"
+                min="${minDate}" max="${maxDate}"
+                required onchange="onPickupDateChange()">
+            <div class="field-error" id="pickupError"></div>
+
+            <label for="pickupTime">Pickup Time</label>
+            <select class="time-select" id="pickupTime" required disabled>
+                <option value="">Select a date first</option>
+            </select>
+            <div class="field-error" id="timeError">Please select a pickup time.</div>
+
+            <button type="submit" class="place-order-btn">Place Order</button>
+        </form>
+    `;
+}
+
+/* ── TIME PICKER ── */
+function fmt12(timeStr){
+    const [h, m] = timeStr.split(':').map(Number);
+    const p = h >= 12 ? 'PM' : 'AM';
+    const h12 = h > 12 ? h - 12 : h === 0 ? 12 : h;
+    return `${h12}:${String(m).padStart(2,'0')} ${p}`;
+}
+
+async function onPickupDateChange(){
+    const dateVal = document.getElementById("pickupDay").value;
+    const timeSelect = document.getElementById("pickupTime");
+    const pickupErr = document.getElementById("pickupError");
+
+    pickupErr.textContent = "";
+    pickupErr.style.display = "none";
+    timeSelect.disabled = true;
+    timeSelect.innerHTML = '<option value="">Loading times…</option>';
+
+    if (!dateVal) {
+        timeSelect.innerHTML = '<option value="">Select a date first</option>';
+        return;
+    }
+
+    try {
+        const { data, error } = await sb.rpc('get_availability', {
+            p_date: dateVal, p_menu_slug: window.CURRENT_SEASONAL_SLUG
+        });
+        if (error) throw error;
+
+        if (!data.open){
+            pickupErr.textContent = "The store is closed on this day — please choose another.";
+            pickupErr.style.display = "block";
+            timeSelect.innerHTML = '<option value="">Store is closed</option>';
+            return;
+        }
+
+        const allFull = data.slots.every(s => s.full);
+        if (allFull){
+            timeSelect.innerHTML = '<option value="">All times are full for this day</option>';
+            return;
+        }
+
+        // Build option list; automatically skip to first available
+        let firstAvailable = true;
+        timeSelect.innerHTML = data.slots.map(slot => {
+            const label = fmt12(slot.time) + (slot.full ? ' — Full' : '');
+            const selected = (!slot.full && firstAvailable) ? 'selected' : '';
+            if (!slot.full && firstAvailable) firstAvailable = false;
+            return `<option value="${slot.time}" ${slot.full ? 'disabled' : ''} ${selected}>${label}</option>`;
+        }).join('');
+
+        timeSelect.disabled = false;
+
+    } catch (e){
+        console.error(e);
+        pickupErr.textContent = "Couldn't load pickup times. Please try again.";
+        pickupErr.style.display = "block";
+        timeSelect.innerHTML = '<option value="">Error loading times</option>';
+    }
+}
+
+/* ── ORDER SUBMISSION ── */
+async function handleCheckoutSubmit(e){
+    e.preventDefault();
+
+    const pickupDay = document.getElementById("pickupDay").value;
+    const pickupTime = document.getElementById("pickupTime").value;
+    const timeError = document.getElementById("timeError");
+    timeError.style.display = "none";
+
+    if (!pickupTime){
+        timeError.style.display = "block";
+        return;
+    }
+
+    const name  = document.getElementById("custName").value;
+    const email = document.getElementById("custEmail").value;
+    const phone = document.getElementById("custPhone").value;
+    const total = cart.reduce((s, i) => s + i.price * i.qty, 0);
+
+    const submitBtn = e.target.querySelector(".place-order-btn");
+    submitBtn.disabled = true;
+    submitBtn.textContent = "Placing order…";
+
+    try {
+        const { data: orderId, error } = await sb.rpc('place_order', {
+            p_name:        name,
+            p_email:       email,
+            p_phone:       phone,
+            p_pickup_date: pickupDay,
+            p_pickup_time: pickupTime,
+            p_items:       cart.map(i => ({ name: i.name, price: i.price, qty: i.qty, notes: i.notes || '' })),
+            p_menu_slug:   window.CURRENT_SEASONAL_SLUG
+        });
+
+        if (error){
+            const msg = error.message || '';
+            // Slot filled up between page load and submit — refresh times
+            if (msg.includes('SLOT_FULL')){
+                timeError.textContent = "That pickup time just filled up. Please choose another time.";
+                timeError.style.display = "block";
+                await onPickupDateChange();
+                submitBtn.disabled = false;
+                submitBtn.textContent = "Place Order";
+                return;
+            }
+            if (msg.includes('DATE_OUT_OF_RANGE')) throw new Error("That pickup date is outside the ordering window.");
+            if (msg.includes('STORE_CLOSED'))      throw new Error("The store is closed on that day.");
+            if (msg.includes('INVALID_TIME'))      throw new Error("That pickup time isn't valid — please pick a time from the list.");
+            if (msg.includes('ORDERING_CLOSED'))   throw new Error("Ordering is currently closed for this menu.");
+            throw new Error("Something went wrong placing your order.");
+        }
+
+        const pickupFormatted = new Date(pickupDay + "T00:00:00").toLocaleDateString("en-US", {
+            weekday: "long", month: "long", day: "numeric"
+        });
+        showConfirmation(name, pickupFormatted, fmt12(pickupTime));
+
+    } catch (err){
+        console.error(err);
+        submitBtn.disabled = false;
+        submitBtn.textContent = "Place Order";
+        alert(err.message || "Something went wrong. Please try again or call us directly.");
+    }
+}
+
+function showConfirmation(name, pickup, time){
+    document.getElementById("checkoutContent").innerHTML = `
+        <div class="confirmation">
+            <div class="checkmark">${window.CONFIRMATION_EMOJI}</div>
+            <h3>Order Received!</h3>
+            <p>Thanks, ${name}! Your Christmas order is confirmed for pickup on<br>
+            <strong>${pickup} at ${time}</strong>.<br>We'll see you then!</p>
+            <button class="done-btn" onclick="finishCheckout()">Done</button>
+        </div>
+    `;
+}
+
+function finishCheckout(){
+    cart = [];
+    renderCart();
+    closeCheckout();
+}
+
+/* ── MENU STATUS CHECK ── */
+async function checkMenuStatus(){
+    try {
+        const { data: menu, error } = await sb.from('seasonal_menus')
+            .select('enabled').eq('slug', window.CURRENT_SEASONAL_SLUG).single();
+        if (error) return;
+        if (menu && !menu.enabled){
+            document.getElementById("menuContent").style.display = "none";
+            document.getElementById("menuClosedMessage").style.display = "block";
+            cartToggleEl.style.display = "none";
+        }
+    } catch (e){ console.error(e); }
+}
+
+checkMenuStatus();
+loadMenuConfig();
+loadMenuItems();
+
+// Realtime: schedule/menu/status changes made in the admin dashboard
+// appear for customers instantly — no polling, no refresh
+sb.channel('menu-live')
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'menu_config'    }, () => loadMenuConfig())
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'menu_items'     }, () => loadMenuItems())
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'seasonal_menus' }, () => checkMenuStatus())
+    .subscribe();
+</script>
+<script src="seasonal-nav.js"></script>
+</body>
+</html>
